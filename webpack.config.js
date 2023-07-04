@@ -3,22 +3,33 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const path = require('path');
 
 module.exports = {
-	entry: './src/popup.jsx',
+	entry: {
+		popup: path.resolve('./src/popup.tsx')
+	},
 	output: {
 		path: path.resolve(__dirname, 'dist'),
 		filename: '[name].js',
 	},
+	resolve: {
+		extensions: ['.tsx', '.ts', '.js'],
+	},
 	devtool: 'inline-source-map',
 	module: {
-		rules: [{
-			test: /\.(js|jsx)$/,
-			use: {
-				loader: 'babel-loader',
-				options: {
-					presets: ['@babel/preset-env', '@babel/preset-react']
+		rules: [
+			{
+				test: /\.tsx?$/i,
+				use: 'ts-loader',
+				exclude: /node_modules/
+			},
+			{
+				test: /\.(js|jsx)$/,
+				use: {
+					loader: 'babel-loader',
+					options: {
+						presets: ['@babel/preset-env', '@babel/preset-react']
+					}
 				}
-			}
-		}],
+			}],
 	},
 	plugins: [
 		new HtmlWebpackPlugin({
