@@ -1,0 +1,31 @@
+{
+	"name": "pomodoro-chrome-extension",
+	"version": "1.0.0",
+	"main": "index.js",
+	"author": "Nikita Kochnev",
+	"license": "MIT",
+	"private": true,
+	"dependencies": {
+		"react": "^18.2.0",
+		"react-dom": "^18.2.0"
+	},
+	"scripts": {
+		"dev": "webpack --watch --progress --config webpack.dev.js",
+		"build": "webpack --config webpack.prod.js"
+	},
+	"devDependencies": {
+		"@babel/core": "^7.22.5",
+		"@babel/preset-env": "^7.22.5",
+		"@babel/preset-react": "^7.22.5",
+		"@types/react": "^18.2.14",
+		"@types/react-dom": "^18.2.6",
+		"babel-loader": "^9.1.2",
+		"copy-webpack-plugin": "^11.0.0",
+		"html-webpack-plugin": "^5.5.3",
+		"ts-loader": "^9.4.4",
+		"typescript": "^5.1.6",
+		"webpack": "^5.88.1",
+		"webpack-cli": "^5.1.4",
+		"webpack-merge": "^5.9.0"
+	}
+}
