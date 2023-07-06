@@ -1,0 +1,14 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@import url("https://fonts.googleapis.com/css?family=Lobster:regular&display=swap");
+
+body {
+	height: 400px;
+	width: 600px;
+	@apply font-lobster
+}
+#root-pomadoro-extension {
+	height: 100%;
+	width: 100%;
+}

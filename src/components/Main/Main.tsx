@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import timerConverter from '../utils/timerConverter';
+import timerConverter from '../../utils/timerConverter';
+import styles from './Main.module.scss'
 
 export interface ITime {
 	hours: number;
@@ -43,16 +44,20 @@ const Main = ({ setOptions }: IProps) => {
 	}, [isStarted])
 
 	return (
-		<div>
-			<h1>Pomodoro</h1>
-			<div>{timerConverter(time)}</div>
-			<div style={{ display: 'flex' }}>
-				<button type='button' onClick={() => setIsStarted(true)}>Start</button>
-				<button type='button' onClick={() => setIsStarted(false)}>Stop</button>
+		<div className={styles.wrapper}>
+			<div className={styles.title}>
+				<h1 className={styles.titleText}>Pomodoro</h1>
+				<img src='./images/pomodoro.png' alt='Pomodoro' />
+			</div>
+			<div className={styles.mode}>Job</div>
+			<div className={styles.timer}>{timerConverter(time)}</div>
+			<div className={styles.actions}>
+				<button className={styles.buttonAction} type='button' onClick={() => setIsStarted(true)}>Start</button>
+				<button className={styles.buttonAction} type='button' onClick={() => setIsStarted(false)}>Stop</button>
 			</div>
 		</div>
 	)
 
 }
 
-export default Main
+export default Main;

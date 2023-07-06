@@ -1,4 +1,4 @@
-import { ITime } from "../components/Main";
+import { ITime } from "../components/Main/Main";
 
 
 

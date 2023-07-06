@@ -12,7 +12,7 @@ module.exports = {
 		clean: true,
 	},
 	resolve: {
-		extensions: ['.tsx', '.ts', '.js'],
+		extensions: ['.tsx', '.ts', '.js', '.scss'],
 	},
 	devServer: {
 		static: './dist'
@@ -38,7 +38,7 @@ module.exports = {
 				}
 			},
 			{
-				test: /\.css$/i,
+				test: /\.scss$/i,
 				use: ["style-loader", "css-loader", "postcss-loader"],
 			},
 		],
