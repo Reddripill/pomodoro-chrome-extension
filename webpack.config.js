@@ -9,9 +9,16 @@ module.exports = {
 	output: {
 		path: path.resolve(__dirname, 'dist'),
 		filename: '[name].js',
+		clean: true,
 	},
 	resolve: {
 		extensions: ['.tsx', '.ts', '.js'],
+	},
+	devServer: {
+		static: './dist'
+	},
+	optimization: {
+		runtimeChunk: true,
 	},
 	devtool: 'inline-source-map',
 	module: {
@@ -29,7 +36,12 @@ module.exports = {
 						presets: ['@babel/preset-env', '@babel/preset-react']
 					}
 				}
-			}],
+			},
+			{
+				test: /\.css$/i,
+				use: ["style-loader", "css-loader", "postcss-loader"],
+			},
+		],
 	},
 	plugins: [
 		new HtmlWebpackPlugin({
