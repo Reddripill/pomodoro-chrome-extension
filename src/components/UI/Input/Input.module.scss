@@ -1,0 +1,10 @@
+.input {
+  @apply w-full;
+}
+.label {
+  @apply text-base font-medium text-iconColor font-sans;
+}
+.input-field {
+  @apply w-full h-11 rounded-md bg-inputColor text-xl 
+  text-iconColor font-sans px-4;
+}

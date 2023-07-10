@@ -1,0 +1,7 @@
+.button,
+.button[type="submit"],
+.button[type="button"] {
+  @apply min-w-[100px] rounded-3xl font-lobster text-2xl px-3 h-10
+   text-mainBg flex items-center justify-center bg-textRed
+	transition-colors hover:bg-mainRed;
+}

@@ -12,7 +12,8 @@ module.exports = {
 				iconColor: '#000',
 				timerColor: '#CAB98E',
 				inputColor: '#FBE0BA',
-				darkBg: 'rgba(202, 190, 174, 0.74)'
+				darkBg: 'rgba(202, 190, 174, 0.74)',
+				iconHover: '#BCB7B0',
 			},
 			fontFamily: {
 				'lobster': ['Lobster', 'sans-serif']
@@ -22,6 +23,12 @@ module.exports = {
 			},
 			transitionDuration: {
 				DEFAULT: '300ms'
+			},
+			width: {
+				'340': '340px',
+			},
+			inset: {
+				'276px': '276px'
 			}
 		},
 		container: {

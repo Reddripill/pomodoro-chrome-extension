@@ -1,0 +1,44 @@
+.wrapper {
+  @apply absolute h-full w-full -right-full
+	top-0;
+}
+.wrapper._active {
+  @apply right-0 bg-darkBg;
+}
+.container {
+  @apply absolute h-full w-340 top-0 -right-276px flex
+	bg-mainBg transition-all;
+}
+.container._active {
+  @apply right-0;
+}
+.menu {
+  @apply basis-16 flex flex-col gap-2 justify-center 
+	items-center border-transparent;
+}
+.menu._active {
+  @apply border-x border-iconColor;
+}
+.menu-item {
+  @apply text-2xl text-iconColor cursor-pointer p-2 
+	transition-colors rounded-md hover:bg-iconHover;
+}
+.menu-item._active {
+  @apply bg-iconHover;
+}
+.sidebar {
+  @apply flex-grow flex flex-col p-4;
+}
+.head {
+  @apply flex justify-between items-center border-b
+	border-black pb-1;
+}
+.text {
+  @apply font-sans text-base text-black;
+}
+.close {
+  @apply cursor-pointer text-lg;
+}
+.body {
+  @apply grow mt-4;
+}

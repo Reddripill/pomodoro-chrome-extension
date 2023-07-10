@@ -4,7 +4,8 @@ const path = require('path');
 
 module.exports = {
 	entry: {
-		popup: path.resolve('./src/popup.tsx')
+		popup: path.resolve('./src/scripts/popup.tsx'),
+		background: path.resolve('./src/components/Background/Background.tsx'),
 	},
 	output: {
 		path: path.resolve(__dirname, 'dist'),
@@ -17,10 +18,6 @@ module.exports = {
 	devServer: {
 		static: './dist'
 	},
-	optimization: {
-		runtimeChunk: true,
-	},
-	devtool: 'inline-source-map',
 	module: {
 		rules: [
 			{
@@ -44,10 +41,6 @@ module.exports = {
 		],
 	},
 	plugins: [
-		new HtmlWebpackPlugin({
-			template: './src/popup.html',
-			filename: 'popup.html'
-		}),
 		new CopyPlugin({
 			patterns: [
 				{
@@ -55,6 +48,16 @@ module.exports = {
 					to: path.resolve('dist')
 				}
 			]
-		})
+		}),
+		...getHtmlPlugins(['popup'])
 	]
 };
+
+function getHtmlPlugins(chunks) {
+	return chunks.map(chunk => new HtmlWebpackPlugin({
+		title: 'Chrome Extension',
+		chunks: [chunk],
+		filename: `${chunk}.html`,
+		template: chunk === 'popup' ? './src/popup.html' : ''
+	}))
+}
