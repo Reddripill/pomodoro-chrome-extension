@@ -5,7 +5,7 @@ const path = require('path');
 module.exports = {
 	entry: {
 		popup: path.resolve('./src/scripts/popup.tsx'),
-		background: path.resolve('./src/components/Background/Background.tsx'),
+		background: path.resolve('./src/scripts/background.ts'),
 	},
 	output: {
 		path: path.resolve(__dirname, 'dist'),
@@ -18,6 +18,9 @@ module.exports = {
 	devServer: {
 		static: './dist'
 	},
+	watchOptions: {
+		ignored: ['**/node_modules'],
+	 },
 	module: {
 		rules: [
 			{

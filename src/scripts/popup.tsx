@@ -8,7 +8,7 @@ const root = ReactDOM.createRoot(
 	document.getElementById('root-pomadoro-extension') as HTMLElement
 )
 
-const port = chrome.runtime.connect({name: 'timer'})
+
 
 root.render(
 	<React.StrictMode>
