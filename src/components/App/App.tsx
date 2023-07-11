@@ -7,11 +7,7 @@ import { PortContext } from '../../providers/PortProvider';
 
 
 const App = () => {
-	const [time, setTime] = useState<ITime>({
-		hours: 0,
-		minutes: 40,
-		seconds: 0
-	});
+	const [time, setTime] = useState<ITime | null>(null);
 	const [port, setPort] = useState<chrome.runtime.Port | null>(null)
 	useEffect(() => {
 		const timerPort = chrome.runtime.connect({name: 'timer'});
@@ -28,11 +24,13 @@ const App = () => {
 	}, [])
 	return (
 		<>
-			<PortContext.Provider value={{port}}>
-				<div className={styles.wrapper}>
-					<Main time={time} />
-				</div>
-			</PortContext.Provider>
+			{time &&
+				<PortContext.Provider value={{port}}>
+					<div className={styles.wrapper}>
+						<Main time={time} />
+					</div>
+				</PortContext.Provider>
+			}
 		</>
 	)
 }

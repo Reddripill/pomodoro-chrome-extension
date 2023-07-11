@@ -55,7 +55,7 @@ chrome.runtime.onConnect.addListener(port => {
 				timestamp = null;
 			}
 		}
-
+		port.postMessage({time})
 		popupPort = port;
 		if (timestamp) {
 			clearInterval(timestamp)
