@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useContext } from 'react'
 import styles from './Options.module.scss'
 import Input from '../UI/Input/Input'
 import Button from '../UI/Button/Button'
 import { ITime } from '../Main/Main';
+import { PortContext } from '../../providers/PortProvider';
 
 interface IProps {
 	cb?: () => void;
@@ -10,15 +11,14 @@ interface IProps {
 
 const Options = ({cb}: IProps) => {
 	const [minutes, setMinutes] = useState<number | string>(30);
-	/* useEffect(() => {
-		port.postMessage({timeMessage: {
-			time: {
-				hours: 0,
-				minutes: minutes,
-				seconds: 0,
-			}
-		}})
-	}, [minutes]) */
+	const {port} = useContext(PortContext);
+	const clickHandler = () => {
+		port.postMessage({time: {
+			hours: 0,
+			minutes: +minutes,
+			seconds: 0
+		} as ITime})
+	}
 	return (
 		<div className={styles.options}>
 			<Input
@@ -29,7 +29,10 @@ const Options = ({cb}: IProps) => {
 			/>
 			<Button
 			 	type='submit'
-				clickHandler={cb}
+				clickHandler={() => {
+					cb();
+					clickHandler()
+				}}
 			>
 				Save
 			</Button>

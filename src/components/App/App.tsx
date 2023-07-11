@@ -7,14 +7,18 @@ import { PortContext } from '../../providers/PortProvider';
 
 
 const App = () => {
-	const [time, setTime] = useState<number>(0);
+	const [time, setTime] = useState<ITime>({
+		hours: 0,
+		minutes: 40,
+		seconds: 0
+	});
 	const [port, setPort] = useState<chrome.runtime.Port | null>(null)
 	useEffect(() => {
 		const timerPort = chrome.runtime.connect({name: 'timer'});
 		setPort(timerPort)
 		const messageHandler = (message: any) => {
 			console.log('POPUP MESSAGE: ', message);
-			setTime(message.count)
+			setTime(message.time)
 		}
 		timerPort.onMessage.addListener(messageHandler)
 		return () => {

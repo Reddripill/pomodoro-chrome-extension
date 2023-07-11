@@ -11,7 +11,7 @@ export interface ITime {
 
 let timestamp: NodeJS.Timer | null = null;
 let popupPort: null | chrome.runtime.Port = null;
-let timerMessage: IExtensionMessages = {
+/* let timerMessage: IExtensionMessages = {
 	time: {
 		hours: 0,
 		minutes: 40,
@@ -19,9 +19,19 @@ let timerMessage: IExtensionMessages = {
 	},
 	isActive: false,
 	popup: false
-};
+}; */
 let count = 0;
-let mode = 'Stop'
+let mode = 'Stop';
+let time = {
+	hours: 0,
+	minutes: 40,
+	seconds: 0
+}
+let defaultTime = {
+	hours: 0,
+	minutes: 40,
+	seconds: 0
+}
 
 
 chrome.runtime.onConnect.addListener(port => {
@@ -30,9 +40,14 @@ chrome.runtime.onConnect.addListener(port => {
 			mode = modeArg
 			if (modeArg === 'Start') {
 				timestamp = setInterval(() => {
-					++count;
+					if (time.seconds === 0) {
+						time.minutes -= 1;
+						time.seconds = 59;
+					} else {
+						time.seconds -= 1;
+					}
 					if (popupPort) {
-						port.postMessage({count: count})
+						port.postMessage({time})
 					}
 				}, 1000)
 			} else {
@@ -49,9 +64,14 @@ chrome.runtime.onConnect.addListener(port => {
 				timer(mode)
 			}
 		}
+		// Make switch construction for onMessage handler
 		port.onMessage.addListener(message => {
 			if (message.mode) {
 				timer(message.mode)
+			}
+			if (message.time) {
+				defaultTime = message.time;
+				console.log('NEW DEFAULT TIME: ', defaultTime);
 			}
 		})
 		port.onDisconnect.addListener(disconnectedPort => {
