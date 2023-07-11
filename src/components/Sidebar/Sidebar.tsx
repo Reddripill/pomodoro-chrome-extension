@@ -26,7 +26,7 @@ type MenuItemType = 'settings' | 'user' | 'logOut';
 // Change this type
 
 
-const Sidebar = ({port}: {port: chrome.runtime.Port}) => {
+const Sidebar = () => {
 	const [activeItem, setActiveItem] = useState<MenuItemType | null>(null);
 	return (
 		<>
@@ -58,7 +58,6 @@ const Sidebar = ({port}: {port: chrome.runtime.Port}) => {
 					<div className={styles.body}>
 						<Options 
 							cb={() => setActiveItem(null)}
-							port={port}
 						/>
 					</div>
 				</div>

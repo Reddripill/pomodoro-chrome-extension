@@ -9,7 +9,8 @@ export interface ITime {
 	seconds: number;
 }
 
-let timestamp: NodeJS.Timer;
+let timestamp: NodeJS.Timer | null = null;
+let popupPort: null | chrome.runtime.Port = null;
 let timerMessage: IExtensionMessages = {
 	time: {
 		hours: 0,
@@ -19,40 +20,44 @@ let timerMessage: IExtensionMessages = {
 	isActive: false,
 	popup: false
 };
+let count = 0;
+let mode = 'Stop'
 
 
 chrome.runtime.onConnect.addListener(port => {
-	timerMessage.popup = true;
-	port.postMessage({timerMessage})
-
-	port.onDisconnect.addListener(disconnect => {
-		timerMessage.popup = false;
-	})
-
-	port.onMessage.addListener((message) => {
-		const respondedMessage = message.timerMessage;
-		if (respondedMessage.isActive) {
-			timerMessage.isActive = respondedMessage.isActive
+	if (port.name === 'timer') {
+		const timer = (modeArg: string) => {
+			mode = modeArg
+			if (modeArg === 'Start') {
+				timestamp = setInterval(() => {
+					++count;
+					if (popupPort) {
+						port.postMessage({count: count})
+					}
+				}, 1000)
+			} else {
+				clearInterval(timestamp);
+				timestamp = null;
+			}
 		}
-		if (timerMessage.isActive) {
-			console.log('isActive');
-			timestamp = setInterval(() => {
-				let time = timerMessage.time;
-				if (time.seconds === 0) {
-					time.minutes -= 1;
-					time.seconds = 59;
-				} else {
-					time.seconds -= 1;
-				}
-				if (timerMessage.popup) {
-					port.postMessage({timerMessage});
-				}
-			}, 1000)
-		} else {
+
+		popupPort = port;
+		if (timestamp) {
 			clearInterval(timestamp)
+			timestamp = null;
+			if (mode === 'Start') {
+				timer(mode)
+			}
 		}
-		console.log('BACKGROUND MESSAGE: ', respondedMessage);
-	})
+		port.onMessage.addListener(message => {
+			if (message.mode) {
+				timer(message.mode)
+			}
+		})
+		port.onDisconnect.addListener(disconnectedPort => {
+			popupPort = null;
+		})
+	}
 })
 
 

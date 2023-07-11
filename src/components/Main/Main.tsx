@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import timerConverter from '../../utils/timerConverter';
 import styles from './Main.module.scss'
 import Sidebar from '../Sidebar/Sidebar';
+import { PortContext } from '../../providers/PortProvider';
 
 export interface ITime {
 	hours: number;
@@ -10,12 +11,12 @@ export interface ITime {
 }
 
 interface IProps {
-	time: ITime,
-	port: chrome.runtime.Port
+	time: number,
 }
 
 
-const Main = ({time, port}: IProps) => {
+const Main = ({time}: IProps) => {
+	const {port} = useContext(PortContext);
 	return (
 		<div className={styles.wrapper}>
 			<div className={styles.title}>
@@ -23,26 +24,16 @@ const Main = ({time, port}: IProps) => {
 				<img src='./images/pomodoro.png' alt='Pomodoro' />
 			</div>
 			<div className={styles.mode}>Job</div>
-			<div className={styles.timer}>{timerConverter(time)}</div>
+			<div className={styles.timer}>{time}</div>
 			<div className={styles.actions}>
 				<button className={styles.buttonAction} type='button' onClick={() => {
-					port.postMessage({
-						timerMessage: {
-							time,
-							isActive: true
-						}
-					})
+					port.postMessage({mode: 'Start'})
 				}}>Start</button>
 				<button className={styles.buttonAction} type='button' onClick={() => {
-					port.postMessage({
-						timerMessage: {
-							time,
-							isActive: false
-						}
-					})
+					port.postMessage({mode: 'Stop'})
 				}}>Stop</button>
 			</div>
-			<Sidebar port={port} />
+			<Sidebar />
 		</div>
 	)
 

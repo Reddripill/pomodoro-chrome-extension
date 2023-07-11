@@ -6,12 +6,11 @@ import { ITime } from '../Main/Main';
 
 interface IProps {
 	cb?: () => void;
-	port: chrome.runtime.Port
 }
 
-const Options = ({cb, port}: IProps) => {
+const Options = ({cb}: IProps) => {
 	const [minutes, setMinutes] = useState<number | string>(30);
-	useEffect(() => {
+	/* useEffect(() => {
 		port.postMessage({timeMessage: {
 			time: {
 				hours: 0,
@@ -19,7 +18,7 @@ const Options = ({cb, port}: IProps) => {
 				seconds: 0,
 			}
 		}})
-	}, [minutes])
+	}, [minutes]) */
 	return (
 		<div className={styles.options}>
 			<Input
