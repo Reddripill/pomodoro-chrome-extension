@@ -1,8 +1,8 @@
 import React, { useContext } from 'react'
-import timerConverter from '../../utils/timerConverter';
 import styles from './Main.module.scss'
 import Sidebar from '../Sidebar/Sidebar';
 import { PortContext } from '../../providers/PortProvider';
+import Timer from '../UI/Timer/Timer';
 
 export interface ITime {
 	hours: number;
@@ -24,7 +24,7 @@ const Main = ({time}: IProps) => {
 				<img src='./images/pomodoro.png' alt='Pomodoro' />
 			</div>
 			<div className={styles.mode}>Job</div>
-			<div className={styles.timer}>{timerConverter(time)}</div>
+			<Timer time={time}/>
 			<div className={styles.actions}>
 				<button className={styles.buttonAction} type='button' onClick={() => {
 					port.postMessage({mode: 'Start'})

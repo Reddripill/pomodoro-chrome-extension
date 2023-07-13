@@ -5,10 +5,7 @@
   @apply text-mainRed text-3xl font-lobster;
 }
 .mode {
-  @apply text-lg text-textRed mb-20;
-}
-.timer {
-  @apply text-3xl text-textRed mb-20;
+  @apply text-lg text-textRed mb-10;
 }
 .actions {
   @apply flex items-center gap-12;
@@ -19,5 +16,5 @@ button.buttonAction {
 	hover:bg-mainRed;
 }
 .wrapper {
-  @apply flex flex-col justify-center items-center relative pb-20 pt-4 h-full;
+  @apply flex flex-col justify-center items-center relative pb-14 pt-4 h-full;
 }

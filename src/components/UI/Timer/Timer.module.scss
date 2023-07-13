@@ -1,0 +1,28 @@
+.container {
+  @apply w-[240px] h-[240px] mb-10;
+}
+.main-circle {
+  @apply absolute bg-textRed rounded-full 
+  z-[1] w-[240px] h-[240px] overflow-hidden
+  flex justify-center items-center;
+}
+.semicircle {
+  @apply absolute h-full w-1/2 top-0 right-0;
+}
+.first-semicircle {
+  @apply bg-white z-[2];
+}
+.second-semicircle {
+  @apply bg-green-500 z-[3];
+}
+.third-semicircle {
+  @apply bg-red-700 z-[4];
+}
+.fullcircle {
+  @apply absolute w-[212px] h-[212px] z-[5]
+  bg-mainBg rounded-full;
+}
+
+.time {
+  @apply text-3xl text-textRed relative z-[10];
+}

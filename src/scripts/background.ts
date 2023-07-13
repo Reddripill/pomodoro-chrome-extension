@@ -11,41 +11,48 @@ export interface ITime {
 
 let timestamp: NodeJS.Timer | null = null;
 let popupPort: null | chrome.runtime.Port = null;
-/* let timerMessage: IExtensionMessages = {
-	time: {
-		hours: 0,
-		minutes: 40,
-		seconds: 0
-	},
-	isActive: false,
-	popup: false
-}; */
-let count = 0;
 let mode = 'Stop';
 let time = {
 	hours: 0,
 	minutes: 40,
 	seconds: 0
 }
-let defaultTime = {
-	hours: 0,
-	minutes: 40,
-	seconds: 0
-}
-
+let isComplete = false;
 
 chrome.runtime.onConnect.addListener(port => {
 	if (port.name === 'timer') {
+		chrome.storage.local.get('defaultTime').then(result => {
+			if (!result.defaultTime) {
+				chrome.storage.local.set({defaultTime: time})
+			}
+		})
 		const timer = (modeArg: string) => {
 			mode = modeArg
 			if (modeArg === 'Start') {
+				chrome.storage.local.get('fullTime').then(result => {
+					console.log('FULLTIME BACKGROUND: ', result.fullTime);
+					if (!result.fullTime) {
+						chrome.storage.local.set({fullTime: time})
+					}
+				})
 				timestamp = setInterval(() => {
 					if (time.seconds === 0) {
-						time.minutes -= 1;
-						time.seconds = 59;
+						if (time.minutes === 0) {
+							if (time.hours !== 0) {
+								time.hours -= 1;
+								time.minutes = 59;
+								time.seconds = 59;
+							} else {
+								isComplete = true;
+							}
+						} else {
+							time.minutes -= 1;
+							time.seconds = 59;
+						}
 					} else {
 						time.seconds -= 1;
 					}
+
 					if (popupPort) {
 						port.postMessage({time})
 					}
@@ -69,15 +76,20 @@ chrome.runtime.onConnect.addListener(port => {
 			if (message.mode) {
 				timer(message.mode)
 			}
-			if (message.time) {
-				defaultTime = message.time;
-				console.log('NEW DEFAULT TIME: ', defaultTime);
-			}
 		})
 		port.onDisconnect.addListener(disconnectedPort => {
 			popupPort = null;
 		})
+		chrome.storage.onChanged.addListener(changes => {
+			for (let [key, {oldValue, newValue}] of Object.entries(changes)) {
+				console.log('CHANGES: ', changes);
+				if (key === 'defaultTime' && time.minutes === oldValue.minutes) {
+					console.log('DEFAULT TIME');
+					chrome.storage.local.remove('fullTime')
+					time = newValue;
+					port.postMessage({time})
+				}
+			}
+		})
 	}
 })
-
-

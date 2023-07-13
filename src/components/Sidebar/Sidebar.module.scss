@@ -1,13 +1,13 @@
 .wrapper {
   @apply absolute h-full w-full -right-full
-	top-0;
+	top-0 z-[15];
 }
 .wrapper._active {
   @apply right-0 bg-darkBg;
 }
 .container {
   @apply absolute h-full w-340 top-0 -right-276px flex
-	bg-mainBg transition-all;
+	bg-mainBg transition-all z-[20];
 }
 .container._active {
   @apply right-0;

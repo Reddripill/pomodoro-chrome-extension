@@ -1,29 +1,34 @@
-import React, { useState, useContext } from 'react'
+import React, { useState, useEffect } from 'react'
 import styles from './Options.module.scss'
 import Input from '../UI/Input/Input'
 import Button from '../UI/Button/Button'
 import { ITime } from '../Main/Main';
-import { PortContext } from '../../providers/PortProvider';
 
 interface IProps {
 	cb?: () => void;
 }
 
 const Options = ({cb}: IProps) => {
-	const [minutes, setMinutes] = useState<number | string>(30);
-	const {port} = useContext(PortContext);
+	const [minutes, setMinutes] = useState<number>(30);
 	const clickHandler = () => {
-		port.postMessage({time: {
+		chrome.storage.local.set({defaultTime: {
 			hours: 0,
 			minutes: +minutes,
 			seconds: 0
-		} as ITime})
+		}})
 	}
+	useEffect(() => {
+		chrome.storage.local.get('defaultTime').then(result => {
+			if (result.defaultTime) {
+				setMinutes(result.defaultTime.minutes)
+			}
+		})
+	}, [])
 	return (
 		<div className={styles.options}>
 			<Input
 				value={minutes}
-				onChange={(val) => setMinutes(val)}
+				onChange={(val) => setMinutes(+val)}
 				id='minutes-input'
 				label='Minutes'
 			/>
