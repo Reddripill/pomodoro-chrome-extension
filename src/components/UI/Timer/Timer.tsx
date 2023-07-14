@@ -13,10 +13,7 @@ const Timer = ({time, fullTime}: IProps) => {
 	useEffect(() => {
 		const fullTimeSeconds = fullTime.seconds + fullTime.minutes * 60 + fullTime.hours * 3600; 
 		const currentTimeSeconds = time.seconds + time.minutes * 60 + time.hours * 3600;
-		console.log('CURRENTTIME: ', currentTimeSeconds);
-		console.log('FULLTIME: ', fullTimeSeconds);
 		const angle = 360 - (currentTimeSeconds / fullTimeSeconds) * 360;
-		console.log(angle);
 	}, [time, fullTime])
 	return (
 		<div className={styles.container}>

@@ -39,28 +39,28 @@ chrome.runtime.onConnect.addListener(port => {
 	if (port.name === 'timer') {
 		const timer = (modeArg: ModeType) => {
 			mode = modeArg
+			time = Object.assign({}, time)
 			if (modeArg === 'Start') {
 				isStarted = true;
 				timestamp = setInterval(() => {
-					let changedTime = Object.assign({}, time)
-					if (changedTime.seconds === 0) {
-						if (changedTime.minutes === 0) {
-							if (changedTime.hours !== 0) {
-								changedTime.hours -= 1;
-								changedTime.minutes = 59;
-								changedTime.seconds = 59;
+					if (time.seconds === 0) {
+						if (time.minutes === 0) {
+							if (time.hours !== 0) {
+								time.hours -= 1;
+								time.minutes = 59;
+								time.seconds = 59;
 							} else {
 								isComplete = true;
 							}
 						} else {
-							changedTime.minutes -= 1;
-							changedTime.seconds = 59;
+							time.minutes -= 1;
+							time.seconds = 59;
 						}
 					} else {
-						changedTime.seconds -= 1;
+						time.seconds -= 1;
 					}
 					if (popupPort) {
-						port.postMessage({time: changedTime, fullTime})
+						port.postMessage({time, fullTime})
 					}
 				}, 1000)
 			} else {
