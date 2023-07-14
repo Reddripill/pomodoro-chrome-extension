@@ -18,17 +18,24 @@ let time = {
 	seconds: 0
 }
 let isComplete = false;
+let isStarted = false;
+
+
+chrome.runtime.onInstalled.addListener(async() => {
+	await chrome.storage.local.get('defaultTime').then(result => {
+		if (!result.defaultTime) {
+			chrome.storage.local.set({defaultTime: time});
+			chrome.storage.local.set({fullTime: time})
+		}
+	})
+})
 
 chrome.runtime.onConnect.addListener(port => {
 	if (port.name === 'timer') {
-		chrome.storage.local.get('defaultTime').then(result => {
-			if (!result.defaultTime) {
-				chrome.storage.local.set({defaultTime: time})
-			}
-		})
 		const timer = (modeArg: string) => {
 			mode = modeArg
 			if (modeArg === 'Start') {
+				isStarted = true;
 				chrome.storage.local.get('fullTime').then(result => {
 					console.log('FULLTIME BACKGROUND: ', result.fullTime);
 					if (!result.fullTime) {
@@ -52,25 +59,30 @@ chrome.runtime.onConnect.addListener(port => {
 					} else {
 						time.seconds -= 1;
 					}
-
 					if (popupPort) {
 						port.postMessage({time})
 					}
 				}, 1000)
 			} else {
 				clearInterval(timestamp);
-				timestamp = null;
 			}
 		}
-		port.postMessage({time})
-		popupPort = port;
-		if (timestamp) {
-			clearInterval(timestamp)
-			timestamp = null;
-			if (mode === 'Start') {
+
+		chrome.storage.local.get('defaultTime')
+		.then(result => {
+			if (!isStarted) {
+				time = result.defaultTime;
+			}
+		})
+		.finally(() => {
+			popupPort = port;
+			port.postMessage({time})
+			if (timestamp) {
+				clearInterval(timestamp)
 				timer(mode)
 			}
-		}
+		})
+
 		// Make switch construction for onMessage handler
 		port.onMessage.addListener(message => {
 			if (message.mode) {
@@ -82,10 +94,8 @@ chrome.runtime.onConnect.addListener(port => {
 		})
 		chrome.storage.onChanged.addListener(changes => {
 			for (let [key, {oldValue, newValue}] of Object.entries(changes)) {
-				console.log('CHANGES: ', changes);
-				if (key === 'defaultTime' && time.minutes === oldValue.minutes) {
-					console.log('DEFAULT TIME');
-					chrome.storage.local.remove('fullTime')
+				if (key === 'defaultTime' && !isStarted) {
+					chrome.storage.local.set({fullTime: newValue})
 					time = newValue;
 					port.postMessage({time})
 				}
