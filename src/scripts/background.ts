@@ -8,11 +8,17 @@ export interface ITime {
 	minutes: number;
 	seconds: number;
 }
+type ModeType = 'Stop' | 'Start';
 
 let timestamp: NodeJS.Timer | null = null;
 let popupPort: null | chrome.runtime.Port = null;
-let mode = 'Stop';
+let mode: ModeType = 'Stop';
 let time = {
+	hours: 0,
+	minutes: 40,
+	seconds: 0
+}
+let fullTime = {
 	hours: 0,
 	minutes: 40,
 	seconds: 0
@@ -25,42 +31,36 @@ chrome.runtime.onInstalled.addListener(async() => {
 	await chrome.storage.local.get('defaultTime').then(result => {
 		if (!result.defaultTime) {
 			chrome.storage.local.set({defaultTime: time});
-			chrome.storage.local.set({fullTime: time})
 		}
 	})
 })
 
 chrome.runtime.onConnect.addListener(port => {
 	if (port.name === 'timer') {
-		const timer = (modeArg: string) => {
+		const timer = (modeArg: ModeType) => {
 			mode = modeArg
 			if (modeArg === 'Start') {
 				isStarted = true;
-				chrome.storage.local.get('fullTime').then(result => {
-					console.log('FULLTIME BACKGROUND: ', result.fullTime);
-					if (!result.fullTime) {
-						chrome.storage.local.set({fullTime: time})
-					}
-				})
 				timestamp = setInterval(() => {
-					if (time.seconds === 0) {
-						if (time.minutes === 0) {
-							if (time.hours !== 0) {
-								time.hours -= 1;
-								time.minutes = 59;
-								time.seconds = 59;
+					let changedTime = Object.assign({}, time)
+					if (changedTime.seconds === 0) {
+						if (changedTime.minutes === 0) {
+							if (changedTime.hours !== 0) {
+								changedTime.hours -= 1;
+								changedTime.minutes = 59;
+								changedTime.seconds = 59;
 							} else {
 								isComplete = true;
 							}
 						} else {
-							time.minutes -= 1;
-							time.seconds = 59;
+							changedTime.minutes -= 1;
+							changedTime.seconds = 59;
 						}
 					} else {
-						time.seconds -= 1;
+						changedTime.seconds -= 1;
 					}
 					if (popupPort) {
-						port.postMessage({time})
+						port.postMessage({time: changedTime, fullTime})
 					}
 				}, 1000)
 			} else {
@@ -72,11 +72,12 @@ chrome.runtime.onConnect.addListener(port => {
 		.then(result => {
 			if (!isStarted) {
 				time = result.defaultTime;
+				fullTime = result.defaultTime;
 			}
 		})
 		.finally(() => {
 			popupPort = port;
-			port.postMessage({time})
+			port.postMessage({time, fullTime})
 			if (timestamp) {
 				clearInterval(timestamp)
 				timer(mode)
@@ -89,17 +90,19 @@ chrome.runtime.onConnect.addListener(port => {
 				timer(message.mode)
 			}
 		})
-		port.onDisconnect.addListener(disconnectedPort => {
-			popupPort = null;
-		})
+
 		chrome.storage.onChanged.addListener(changes => {
 			for (let [key, {oldValue, newValue}] of Object.entries(changes)) {
 				if (key === 'defaultTime' && !isStarted) {
-					chrome.storage.local.set({fullTime: newValue})
 					time = newValue;
+					fullTime = newValue;
 					port.postMessage({time})
 				}
 			}
+		})
+
+		port.onDisconnect.addListener(() => {
+			popupPort = null;
 		})
 	}
 })

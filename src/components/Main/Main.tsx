@@ -11,11 +11,12 @@ export interface ITime {
 }
 
 interface IProps {
-	time: ITime,
+	time: ITime;
+	fullTime: ITime;
 }
 
 
-const Main = ({time}: IProps) => {
+const Main = ({time, fullTime}: IProps) => {
 	const {port} = useContext(PortContext);
 	return (
 		<div className={styles.wrapper}>
@@ -24,7 +25,7 @@ const Main = ({time}: IProps) => {
 				<img src='./images/pomodoro.png' alt='Pomodoro' />
 			</div>
 			<div className={styles.mode}>Job</div>
-			<Timer time={time}/>
+			<Timer time={time} fullTime={fullTime}/>
 			<div className={styles.actions}>
 				<button className={styles.buttonAction} type='button' onClick={() => {
 					port.postMessage({mode: 'Start'})
