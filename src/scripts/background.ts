@@ -39,7 +39,6 @@ chrome.runtime.onConnect.addListener(port => {
 	if (port.name === 'timer') {
 		const timer = (modeArg: ModeType) => {
 			mode = modeArg
-			time = Object.assign({}, time)
 			if (modeArg === 'Start') {
 				isStarted = true;
 				timestamp = setInterval(() => {
@@ -71,8 +70,8 @@ chrome.runtime.onConnect.addListener(port => {
 		chrome.storage.local.get('defaultTime')
 		.then(result => {
 			if (!isStarted) {
-				time = result.defaultTime;
-				fullTime = result.defaultTime;
+				time = Object.assign({}, result.defaultTime);
+				fullTime = Object.assign({}, result.defaultTime);
 			}
 		})
 		.finally(() => {
@@ -94,9 +93,9 @@ chrome.runtime.onConnect.addListener(port => {
 		chrome.storage.onChanged.addListener(changes => {
 			for (let [key, {oldValue, newValue}] of Object.entries(changes)) {
 				if (key === 'defaultTime' && !isStarted) {
-					time = newValue;
-					fullTime = newValue;
-					port.postMessage({time})
+					time = Object.assign({}, newValue);
+					fullTime = Object.assign({}, newValue);
+					port.postMessage({time, fullTime})
 				}
 			}
 		})

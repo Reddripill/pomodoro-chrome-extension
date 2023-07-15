@@ -1,28 +1,17 @@
-.container {
-  @apply w-[240px] h-[240px] mb-10;
+.timer {
+  @apply w-[240px] h-[240px] mb-10 relative;
 }
-.main-circle {
-  @apply absolute bg-textRed rounded-full 
-  z-[1] w-[240px] h-[240px] overflow-hidden
-  flex justify-center items-center;
+.group {
+  @apply fill-none stroke-none;
 }
-.semicircle {
-  @apply absolute h-full w-1/2 top-0 right-0;
+.circle {
+  @apply stroke-[15px] stroke-timerColor;
 }
-.first-semicircle {
-  @apply bg-white z-[2];
+.path {
+  @apply stroke-[15px] stroke-textRed origin-center
+  rotate-90 transition-all;
 }
-.second-semicircle {
-  @apply bg-green-500 z-[3];
-}
-.third-semicircle {
-  @apply bg-red-700 z-[4];
-}
-.fullcircle {
-  @apply absolute w-[212px] h-[212px] z-[5]
-  bg-mainBg rounded-full;
-}
-
 .time {
-  @apply text-3xl text-textRed relative z-[10];
+  @apply text-3xl text-textRed absolute top-0 left-0
+  w-full h-full flex justify-center items-center;
 }
