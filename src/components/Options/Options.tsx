@@ -3,35 +3,48 @@ import styles from './Options.module.scss'
 import Input from '../UI/Input/Input'
 import Button from '../UI/Button/Button'
 import { ITime } from '../Main/Main';
+import TimerInput from '../UI/TimerInput/TimerInput';
 
 interface IProps {
 	cb?: () => void;
 }
 
 const Options = ({cb}: IProps) => {
-	const [minutes, setMinutes] = useState<number>(30);
+	const [time, setTime] = useState<ITime>({
+      hours: 0,
+      minutes: 40,
+      seconds: 0,
+   });
 	const clickHandler = () => {
-		chrome.storage.local.set({defaultTime: {
-			hours: 0,
-			minutes: +minutes,
-			seconds: 0
-		}})
+		chrome.storage.local.set({defaultTime: time})
 	}
+   const changeHandler = (value: string, type: keyof ITime) => {
+      setTime(prev => {
+         if (!isNaN(+value)) {
+            if (type !== 'hours' && +value >= 60) return prev;
+            return {
+               ...prev,
+               [type]: +value
+            }
+         }
+         return prev;
+      })
+   }
 	useEffect(() => {
 		chrome.storage.local.get('defaultTime').then(result => {
 			if (result.defaultTime) {
-				setMinutes(result.defaultTime.minutes)
+				setTime(result.defaultTime)
 			}
 		})
 	}, [])
 	return (
 		<div className={styles.options}>
-			<Input
-				value={minutes}
-				onChange={(val) => setMinutes(+val)}
-				id='minutes-input'
-				label='Minutes'
-			/>
+         <TimerInput
+            value={time}
+            id='default-time'
+            label='Job Time'
+            onChange={changeHandler}
+         />
 			<Button
 			 	type='submit'
 				clickHandler={() => {

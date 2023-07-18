@@ -1,13 +1,11 @@
+import { ITime } from "../components/Main/Main";
+
 export interface IExtensionMessages {
 	isActive: boolean;
 	time: ITime;
 	popup: boolean;
 }
-export interface ITime {
-	hours: number;
-	minutes: number;
-	seconds: number;
-}
+
 type ModeType = 'Stop' | 'Start';
 
 let timestamp: NodeJS.Timer | null = null;
@@ -18,11 +16,7 @@ let time = {
 	minutes: 40,
 	seconds: 0
 }
-let fullTime = {
-	hours: 0,
-	minutes: 40,
-	seconds: 0
-}
+let fullTime = Object.assign({}, time)
 let isComplete = false;
 let isStarted = false;
 

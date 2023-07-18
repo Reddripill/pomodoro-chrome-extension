@@ -1,4 +1,4 @@
-import { ITime } from "../scripts/background";
+import { ITime } from "../components/Main/Main";
 
 
 const timerProgress = (fullTime: ITime, currentTIme: ITime, length: number): string => {

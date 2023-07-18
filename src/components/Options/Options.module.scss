@@ -1,3 +1,6 @@
 .options {
-  @apply flex flex-col gap-3 h-full items-end;
+  @apply flex flex-col gap-3 h-full w-full items-end;
+}
+.inputs {
+  @apply w-full;
 }

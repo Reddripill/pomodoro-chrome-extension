@@ -1,0 +1,17 @@
+.container {
+  @apply w-full;
+}
+.label {
+  @apply text-base font-medium text-iconColor font-sans;
+}
+.inputs {
+  @apply flex items-center justify-center
+  bg-inputColor h-11 rounded-md;
+}
+.input {
+  @apply h-full w-0 bg-transparent text-xl text-iconColor 
+  font-sans flex-grow-0 basis-8 text-center outline-none;
+}
+.colon {
+  @apply px-1 text-xl text-iconColor font-sans;
+}
