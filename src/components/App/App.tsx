@@ -3,20 +3,21 @@ import Main, { ITime } from '../Main/Main';
 import Options from '../Options/Options';
 import styles from './App.module.scss';
 import { PortContext } from '../../providers/PortProvider';
+import { StorageValueType } from '../../types/types';
+import { ITimerProperties } from '../../scripts/background';
 
 
 
 const App = () => {
 	const [time, setTime] = useState<ITime | null>(null);
 	const [fullTime, setFullTime] = useState<ITime | null>(null);
-	const [port, setPort] = useState<chrome.runtime.Port | null>(null)
+   const [timerPropertiesState, setTimerPropertiesState] = useState<ITimerProperties | null>(null)
 	useEffect(() => {
 		const timerPort = chrome.runtime.connect({name: 'timer'});
-		setPort(timerPort)
-		const messageHandler = (message: any) => {
-			setTime(message.time);
-			setFullTime(message.fullTime);
-			console.log('MESSAGE: ', message);
+		const messageHandler = ({timerProperties}: StorageValueType<ITimerProperties>) => {
+			setTime(timerProperties.time);
+			setFullTime(timerProperties.fullTime);
+         setTimerPropertiesState(timerProperties)
 		}
 		timerPort.onMessage.addListener(messageHandler)
 		return () => {
@@ -27,9 +28,9 @@ const App = () => {
 	return (
 		<>
 			{time &&
-				<PortContext.Provider value={{port}}>
+				<PortContext.Provider value={{timerProperties: timerPropertiesState}}>
 					<div className={styles.wrapper}>
-						<Main time={time} fullTime={fullTime} />
+						<Main />
 					</div>
 				</PortContext.Provider>
 			}

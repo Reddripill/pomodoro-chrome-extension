@@ -1,8 +1,8 @@
-import React, {useState} from 'react'
-import { SetStateType } from '../types/types';
+import React from 'react'
+import { ITimerProperties } from '../scripts/background';
 
 interface IContext {
-	port: chrome.runtime.Port | null;
+	timerProperties: ITimerProperties | null;
 }
 
-export const PortContext = React.createContext<IContext>({port: null});
+export const PortContext = React.createContext<IContext>({timerProperties: null});

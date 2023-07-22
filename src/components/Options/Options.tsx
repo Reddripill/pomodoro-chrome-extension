@@ -1,22 +1,28 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import styles from './Options.module.scss'
-import Input from '../UI/Input/Input'
 import Button from '../UI/Button/Button'
 import { ITime } from '../Main/Main';
 import TimerInput from '../UI/TimerInput/TimerInput';
+import { PortContext } from '../../providers/PortProvider';
 
 interface IProps {
 	cb?: () => void;
 }
 
 const Options = ({cb}: IProps) => {
+   const {timerProperties} = useContext(PortContext)
 	const [time, setTime] = useState<ITime>({
       hours: 0,
       minutes: 40,
       seconds: 0,
    });
-	const clickHandler = () => {
-		chrome.storage.local.set({defaultTime: time})
+	const clickHandler = async () => {
+		await chrome.storage.local.set({timerProperties: {
+         ...timerProperties,
+         time: !timerProperties.isStarted ? time : timerProperties.time,
+         fullTime: !timerProperties.isStarted ? time : timerProperties.time,
+         defaultTime: time
+      }})
 	}
    const changeHandler = (value: string, type: keyof ITime) => {
       setTime(prev => {
@@ -31,12 +37,8 @@ const Options = ({cb}: IProps) => {
       })
    }
 	useEffect(() => {
-		chrome.storage.local.get('defaultTime').then(result => {
-			if (result.defaultTime) {
-				setTime(result.defaultTime)
-			}
-		})
-	}, [])
+      setTime(timerProperties.defaultTime)
+	}, [timerProperties])
 	return (
 		<div className={styles.options}>
          <TimerInput

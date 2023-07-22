@@ -1,16 +1,12 @@
-import React, {useEffect, useRef} from 'react'
+import React, {useContext} from 'react'
 import styles from './Timer.module.scss';
-import cn from 'classnames';
-import { ITime } from '../../Main/Main';
 import timerConverter from '../../../utils/timerConverter';
 import timerProgress from '../../../utils/timerProgress';
+import { PortContext } from '../../../providers/PortProvider';
 
-interface IProps {
-	time: ITime;
-	fullTime: ITime;
-}
 
-const Timer = ({time, fullTime}: IProps) => {
+const Timer = () => {
+   const { timerProperties } = useContext(PortContext);
 	return (
 		<div className={styles.timer}>
 			<svg viewBox='0 0 240 240'>
@@ -24,11 +20,11 @@ const Timer = ({time, fullTime}: IProps) => {
 							a 112 112 0 0 0 224 0
 							a 112 112 0 0 0 -224 0
 						'
-						strokeDasharray={timerProgress(fullTime, time, 704)}
+						strokeDasharray={timerProgress(timerProperties.fullTime, timerProperties.time, 704)}
 					/>
 				</g>
 			</svg>
-			<div className={styles.time}>{timerConverter(time)}</div>
+			<div className={styles.time}>{timerConverter(timerProperties.time)}</div>
 		</div>
 	)
 }

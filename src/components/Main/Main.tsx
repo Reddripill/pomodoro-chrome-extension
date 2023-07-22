@@ -3,6 +3,7 @@ import styles from './Main.module.scss'
 import Sidebar from '../Sidebar/Sidebar';
 import { PortContext } from '../../providers/PortProvider';
 import Timer from '../UI/Timer/Timer';
+import { ITimerProperties } from '../../scripts/background';
 
 export interface ITime {
 	hours: number;
@@ -10,14 +11,10 @@ export interface ITime {
 	seconds: number;
 }
 
-interface IProps {
-	time: ITime;
-	fullTime: ITime;
-}
 
 
-const Main = ({time, fullTime}: IProps) => {
-	const {port} = useContext(PortContext);
+const Main = () => {
+   const {timerProperties} = useContext(PortContext);
 	return (
 		<div className={styles.wrapper}>
 			<div className={styles.title}>
@@ -25,13 +22,19 @@ const Main = ({time, fullTime}: IProps) => {
 				<img src='./images/pomodoro.png' alt='Pomodoro' />
 			</div>
 			<div className={styles.mode}>Job</div>
-			<Timer time={time} fullTime={fullTime}/>
+			<Timer />
 			<div className={styles.actions}>
 				<button className={styles.buttonAction} type='button' onClick={() => {
-					port.postMessage({mode: 'Start'})
+					chrome.storage.local.set({timerProperties: {
+                  ...timerProperties,
+                  mode: 'Start'
+               }})
 				}}>Start</button>
 				<button className={styles.buttonAction} type='button' onClick={() => {
-					port.postMessage({mode: 'Stop'})
+					chrome.storage.local.set({timerProperties: {
+                  ...timerProperties,
+                  mode: 'Stop'
+               }})
 				}}>Stop</button>
 			</div>
 			<Sidebar />
