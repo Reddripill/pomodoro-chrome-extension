@@ -4,7 +4,7 @@ import { timer } from "../utils/timer";
 
 let timerPort: null | chrome.runtime.Port = null;
 
-let time = {
+let defaultTime = {
 	hours: 0,
 	minutes: 0,
 	seconds: 3
@@ -13,23 +13,27 @@ let time = {
 export interface ITimerProperties {
    time: ITime,
    fullTime: ITime,
-   defaultTime: ITime,
-   mode: 'Stop' | 'Start',
+   defaultChillTime: ITime,
+   defaultJobTime: ITime,
+   mode: 'Job' | 'Chill',
    isStarted: boolean,
    isComplete: boolean,
    timestamp: null | NodeJS.Timer,
+   status: 'Stop' | 'Start'
 }
 
 
 chrome.runtime.onInstalled.addListener(async() => {
    let timerProperties: ITimerProperties = {
-      time,
-      fullTime: time,
-      defaultTime: time,
-      mode: 'Stop',
+      time: defaultTime,
+      fullTime: defaultTime,
+      defaultChillTime: defaultTime,
+      defaultJobTime: defaultTime,
+      mode: 'Job',
       isStarted: false,
       isComplete: false,
       timestamp: null,
+      status: 'Stop'
    }
    await chrome.storage.local.set({timerProperties})
 })
@@ -53,9 +57,9 @@ chrome.runtime.onConnect.addListener(async (port) => {
 chrome.storage.onChanged.addListener(changes => {
    for (let [key, {oldValue, newValue}] of Object.entries(changes)) {
       if (key === 'timerProperties') {
-         // console.log('Old Value: ', oldValue);
-         // console.log('New Value: ', newValue);
-         if (newValue.mode !== oldValue.mode) {
+         console.log('Old Value: ', oldValue);
+         console.log('New Value: ', newValue);
+         if (newValue.status !== oldValue.status) {
             timer()
          }
          if (timerPort) {
@@ -64,6 +68,22 @@ chrome.storage.onChanged.addListener(changes => {
                data: newValue
             })
          }
+      }
+   }
+})
+
+chrome.runtime.onMessage.addListener(async (message) => {
+   if (message.target === 'background') {
+      if (message.isCloseOffscreen) {
+         // await chrome.offscreen.closeDocument();
+         chrome.storage.local.get('timerProperties').then(({timerProperties}: StorageValueType<ITimerProperties>) => {
+            const currentTime = timerProperties.mode === 'Job' ? timerProperties.defaultJobTime : timerProperties.defaultChillTime;
+            chrome.storage.local.set({timerProperties: {
+               ...timerProperties,
+               time: currentTime,
+               fullTime: currentTime
+            }})
+         })
       }
    }
 })

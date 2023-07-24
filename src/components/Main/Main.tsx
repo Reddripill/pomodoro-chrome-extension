@@ -3,14 +3,13 @@ import styles from './Main.module.scss'
 import Sidebar from '../Sidebar/Sidebar';
 import { PortContext } from '../../providers/PortProvider';
 import Timer from '../UI/Timer/Timer';
-import { ITimerProperties } from '../../scripts/background';
+
 
 export interface ITime {
 	hours: number;
 	minutes: number;
 	seconds: number;
 }
-
 
 
 const Main = () => {
@@ -21,19 +20,19 @@ const Main = () => {
 				<h1 className={styles.titleText}>Pomodoro</h1>
 				<img src='./images/pomodoro.png' alt='Pomodoro' />
 			</div>
-			<div className={styles.mode}>Job</div>
+			<div className={styles.mode}>{timerProperties.mode}</div>
 			<Timer />
 			<div className={styles.actions}>
 				<button className={styles.buttonAction} type='button' onClick={() => {
 					chrome.storage.local.set({timerProperties: {
                   ...timerProperties,
-                  mode: 'Start'
+                  status: 'Start'
                }})
 				}}>Start</button>
 				<button className={styles.buttonAction} type='button' onClick={() => {
 					chrome.storage.local.set({timerProperties: {
                   ...timerProperties,
-                  mode: 'Stop'
+                  status: 'Stop'
                }})
 				}}>Stop</button>
 			</div>

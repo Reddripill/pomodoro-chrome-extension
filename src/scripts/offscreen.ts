@@ -1,16 +1,17 @@
 import { AudioValuesType } from "../types/types";
-import { fetchAndStartAudio, playAudio } from "../utils/audioManager";
+import { playAudio } from "../utils/audioManager";
 
 
 
 
 const audioElem = document.querySelector('audio');
 
-chrome.runtime.onMessage.addListener(message => {
+chrome.runtime.onMessage.addListener(async (message) => {
    if (message.target === 'offscreen') {
-      playAudio(audioElem, message.data as AudioValuesType)
+      await playAudio(audioElem, message.data as AudioValuesType);
+      chrome.runtime.sendMessage({
+         target: 'background',
+         isCloseOffscreen: true
+      })
    }
 })
-
-
-

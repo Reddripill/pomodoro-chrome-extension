@@ -11,21 +11,40 @@ interface IProps {
 
 const Options = ({cb}: IProps) => {
    const {timerProperties} = useContext(PortContext)
-	const [time, setTime] = useState<ITime>({
+	const [jobTime, setJobTime] = useState<ITime>({
+      hours: 0,
+      minutes: 40,
+      seconds: 0,
+   });
+	const [chillTime, setChillTime] = useState<ITime>({
       hours: 0,
       minutes: 40,
       seconds: 0,
    });
 	const clickHandler = async () => {
+      const time = timerProperties.mode === 'Job' ? jobTime : chillTime;
 		await chrome.storage.local.set({timerProperties: {
          ...timerProperties,
          time: !timerProperties.isStarted ? time : timerProperties.time,
          fullTime: !timerProperties.isStarted ? time : timerProperties.time,
-         defaultTime: time
+         defaultJobTime: jobTime,
+         defaultChillTime: chillTime
       }})
 	}
-   const changeHandler = (value: string, type: keyof ITime) => {
-      setTime(prev => {
+   const chillChangeHandler = (value: string, type: keyof ITime) => {
+      setChillTime(prev => {
+         if (!isNaN(+value)) {
+            if (type !== 'hours' && +value >= 60) return prev;
+            return {
+               ...prev,
+               [type]: +value
+            }
+         }
+         return prev;
+      })
+   }
+   const jobChangeHandler = (value: string, type: keyof ITime) => {
+      setJobTime(prev => {
          if (!isNaN(+value)) {
             if (type !== 'hours' && +value >= 60) return prev;
             return {
@@ -37,15 +56,22 @@ const Options = ({cb}: IProps) => {
       })
    }
 	useEffect(() => {
-      setTime(timerProperties.defaultTime)
+      setJobTime(timerProperties.defaultJobTime);
+      setChillTime(timerProperties.defaultChillTime);
 	}, [timerProperties])
 	return (
 		<div className={styles.options}>
          <TimerInput
-            value={time}
-            id='default-time'
+            value={jobTime}
+            id='default-job-time'
             label='Job Time'
-            onChange={changeHandler}
+            onChange={jobChangeHandler}
+         />
+         <TimerInput
+            value={chillTime}
+            id='default-chill-time'
+            label='Chill Time'
+            onChange={chillChangeHandler}
          />
 			<Button
 			 	type='submit'

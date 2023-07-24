@@ -4,9 +4,11 @@ import { setupOffscreen } from "./setupOffscreen";
 
 export const timer = async () => {
    const {timerProperties} = await chrome.storage.local.get('timerProperties') as StorageValueType<ITimerProperties>;
-   let {mode, time, isStarted, timestamp, isComplete, fullTime} = timerProperties;
-   if (mode === 'Start') {
+   let {status, time, isStarted, timestamp, isComplete, fullTime, mode} = timerProperties;
+   if (status === 'Start') {
       timestamp = setInterval(async () => {
+         isComplete = false;
+         isStarted = true;
          if (time.seconds === 0) {
             if (time.minutes === 0) {
                if (time.hours !== 0) {
@@ -15,8 +17,9 @@ export const timer = async () => {
                   time.seconds = 59;
                } else {
                   isComplete = true;
-                  mode = 'Stop';
                   isStarted = false;
+                  mode = mode === 'Job' ? 'Chill' : 'Job'; 
+                  status = 'Stop';
                   await setupOffscreen('offscreen.html');
                   chrome.runtime.sendMessage({
                      target: 'offscreen',
@@ -37,9 +40,10 @@ export const timer = async () => {
             ...timerProperties,
             timestamp,
             isComplete,
+            isStarted,
             mode,
-            isStarted: true,
-            time
+            status,
+            time,
          }})
       }, 1000)
    } else {

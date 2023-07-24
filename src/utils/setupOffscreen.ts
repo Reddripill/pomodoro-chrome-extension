@@ -16,13 +16,11 @@ export const setupOffscreen = async (path: string) => {
    if (creating) {
       await creating;
    } else {
-      creating = chrome.offscreen.createDocument({
+      creating = await chrome.offscreen.createDocument({
          url: path,
          reasons: [chrome.offscreen.Reason.AUDIO_PLAYBACK],
          justification: 'Start audio'
       })
-      await creating;
-      console.log('CREATING: ', creating);
       creating = null;
    }
 }
