@@ -1,4 +1,6 @@
-/* let audioCtx: AudioContext;
+import { AudioValuesType } from "../types/types";
+
+let audioCtx: AudioContext;
 let audioSource: AudioBufferSourceNode;
 
 const initializeAudio = () => {
@@ -12,21 +14,21 @@ const decodeAudio = async (audioData: ArrayBuffer) => {
    audioSource.connect(audioCtx.destination)
 }
 
-const fetchAndStartAudio = async () => {
+export const fetchAndStartAudio = async () => {
    try {
       const response = await fetch('./audio/mainSound.mp3');
       const buffer = await response.arrayBuffer();
       if(!audioCtx) {
          initializeAudio()
       }
-      decodeAudio(buffer);
+      await decodeAudio(buffer);
       audioSource.start()
    } catch(err) {
       console.error('Error loading audio: ', err);
    }
 }
 
-const playAudio = () => {
+/* const playAudio = () => {
    if (!audioCtx) {
       initializeAudio()
    }
@@ -42,3 +44,9 @@ const stopAudio = () => {
       audioSource.stop()
    }
 } */
+
+export const playAudio = (audioEl: HTMLAudioElement, data: AudioValuesType) => {
+   audioEl.volume = data.volume;
+   audioEl.src = data.source;
+   audioEl.play()
+}

@@ -6,6 +6,7 @@ module.exports = {
 	entry: {
 		popup: path.resolve('./src/scripts/popup.tsx'),
 		background: path.resolve('./src/scripts/background.ts'),
+      offscreen: path.resolve('./src/scripts/offscreen.ts')
 	},
 	output: {
 		path: path.resolve(__dirname, 'dist'),
@@ -52,15 +53,17 @@ module.exports = {
 				}
 			]
 		}),
-		...getHtmlPlugins(['popup'])
+		...getHtmlPlugins(['popup', 'offscreen'])
 	]
 };
 
 function getHtmlPlugins(chunks) {
-	return chunks.map(chunk => new HtmlWebpackPlugin({
-		title: 'Chrome Extension',
-		chunks: [chunk],
-		filename: `${chunk}.html`,
-		template: chunk === 'popup' ? './src/popup.html' : ''
-	}))
+	return chunks.map(chunk => {
+      return new HtmlWebpackPlugin({
+         title: 'Chrome Extension',
+         chunks: [chunk],
+         filename: `${chunk}.html`,
+         template: `./src/html/${chunk}.html`
+      })
+   })
 }

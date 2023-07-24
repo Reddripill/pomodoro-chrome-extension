@@ -1,5 +1,6 @@
 import { ITimerProperties } from "../scripts/background";
 import { StorageValueType } from "../types/types";
+import { setupOffscreen } from "./setupOffscreen";
 
 export const timer = async () => {
    const {timerProperties} = await chrome.storage.local.get('timerProperties') as StorageValueType<ITimerProperties>;
@@ -14,6 +15,16 @@ export const timer = async () => {
                   time.seconds = 59;
                } else {
                   isComplete = true;
+                  mode = 'Stop';
+                  isStarted = false;
+                  await setupOffscreen('offscreen.html');
+                  chrome.runtime.sendMessage({
+                     target: 'offscreen',
+                     data: {
+                        source: './audio/mainSound.mp3',
+                        volume: 1
+                     }
+                  })
                }
             } else {
                time.minutes -= 1;
@@ -25,6 +36,8 @@ export const timer = async () => {
          await chrome.storage.local.set({timerProperties: {
             ...timerProperties,
             timestamp,
+            isComplete,
+            mode,
             isStarted: true,
             time
          }})

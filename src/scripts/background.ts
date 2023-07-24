@@ -6,8 +6,8 @@ let timerPort: null | chrome.runtime.Port = null;
 
 let time = {
 	hours: 0,
-	minutes: 40,
-	seconds: 0
+	minutes: 0,
+	seconds: 3
 }
 
 export interface ITimerProperties {
@@ -39,7 +39,10 @@ chrome.runtime.onConnect.addListener(async (port) => {
 	if (port.name === 'timer') {
       timerPort = port;
 
-      port.postMessage({timerProperties})
+      port.postMessage({
+         target: 'popup',
+         data: timerProperties
+      })
 
 		port.onDisconnect.addListener(async () => {
          timerPort = null;
@@ -50,13 +53,16 @@ chrome.runtime.onConnect.addListener(async (port) => {
 chrome.storage.onChanged.addListener(changes => {
    for (let [key, {oldValue, newValue}] of Object.entries(changes)) {
       if (key === 'timerProperties') {
-         console.log('Old Value: ', oldValue);
-         console.log('New Value: ', newValue);
+         // console.log('Old Value: ', oldValue);
+         // console.log('New Value: ', newValue);
          if (newValue.mode !== oldValue.mode) {
             timer()
          }
          if (timerPort) {
-            timerPort.postMessage({timerProperties: newValue})
+            timerPort.postMessage({
+               target: 'popup',
+               data: newValue
+            })
          }
       }
    }
