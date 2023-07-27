@@ -75,13 +75,18 @@ chrome.storage.onChanged.addListener(changes => {
 chrome.runtime.onMessage.addListener(async (message) => {
    if (message.target === 'background') {
       if (message.isCloseOffscreen) {
-         // await chrome.offscreen.closeDocument();
+         await chrome.offscreen.closeDocument();
          chrome.storage.local.get('timerProperties').then(({timerProperties}: StorageValueType<ITimerProperties>) => {
             const currentTime = timerProperties.mode === 'Job' ? timerProperties.defaultJobTime : timerProperties.defaultChillTime;
+            let status = 'Stop';
+            if (timerProperties.mode === 'Chill') {
+               status = 'Start'
+            }
             chrome.storage.local.set({timerProperties: {
                ...timerProperties,
                time: currentTime,
-               fullTime: currentTime
+               fullTime: currentTime,
+               status
             }})
          })
       }
