@@ -3,5 +3,6 @@ const config = require('./webpack.config.js')
 
 module.exports = merge(config, {
 	mode: 'production',
+   devtool: 'inline-source-map',
 })
 

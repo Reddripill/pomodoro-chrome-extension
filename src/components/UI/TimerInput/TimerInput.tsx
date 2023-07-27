@@ -1,23 +1,24 @@
 import React from 'react'
 import styles from './TimerInput.module.scss'
-import { ITime } from '../../Main/Main';
+import { IStringTime } from '../../../utils/timeConverter';
+import { SetStateType } from '../../../types/types';
 
 
 interface IProps {
-	value: ITime;
+	value: IStringTime;
 	label: string;
 	id: string;
-	onChange: (arg: string, type: keyof ITime) => void;
+	onChange: (arg: string, type: keyof IStringTime) => void;
 }
 
 const TimerInput = ({value, label, id, onChange}: IProps) => {
-	const convertedTime = (e: React.FocusEvent<HTMLInputElement>): void => {
-      let value = e.target.value;
-		if (value.length === 1) {
-         value = '0' + value;
+   const blurHandler = (e: React.FocusEvent<HTMLInputElement>, type: keyof IStringTime) => {
+      let inputValue = e.target.value;
+      if (inputValue.length === 1) {
+         inputValue = '0' + inputValue
       }
-      e.target.value = value;
-	}
+      onChange(inputValue, type)
+   }
 	return (
 		<div className={styles.container}>
 			<label htmlFor={id} className={styles.label}>{label}</label>
@@ -30,7 +31,7 @@ const TimerInput = ({value, label, id, onChange}: IProps) => {
 					onChange={e => {
 						onChange(e.target.value, 'hours')
 					}}
-               onBlur={convertedTime}
+               onBlur={e => blurHandler(e, 'hours')}
 				/>
 				<div className={styles.colon}>:</div>
 				<input 
@@ -39,7 +40,7 @@ const TimerInput = ({value, label, id, onChange}: IProps) => {
 					id={`${id}-minutes`}
 					value={value.minutes}
 					onChange={e => onChange(e.target.value, 'minutes')}
-               onBlur={convertedTime}
+               onBlur={e => blurHandler(e, 'minutes')}
 				/>
 				<div className={styles.colon}>:</div>
 				<input 
@@ -48,7 +49,7 @@ const TimerInput = ({value, label, id, onChange}: IProps) => {
 					id={`${id}-seconds`}
 					value={value.seconds}
 					onChange={e => onChange(e.target.value, 'seconds')}
-               onBlur={convertedTime}
+               onBlur={e => blurHandler(e, 'seconds')}
 				/>
 			</div>
 		</div>
