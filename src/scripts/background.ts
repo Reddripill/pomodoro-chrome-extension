@@ -1,41 +1,13 @@
-import { ITime } from "../components/Main/Main";
 import { StorageValueType } from "../types/types";
+import { ITimerProperties, defatultTimerProperties } from "../utils/default";
 import { timer } from "../utils/timer";
+
+
 
 let timerPort: null | chrome.runtime.Port = null;
 
-let defaultTime = {
-	hours: 0,
-	minutes: 0,
-	seconds: 3
-}
-
-export interface ITimerProperties {
-   time: ITime,
-   fullTime: ITime,
-   defaultChillTime: ITime,
-   defaultJobTime: ITime,
-   mode: 'Job' | 'Chill',
-   isStarted: boolean,
-   isComplete: boolean,
-   timestamp: null | NodeJS.Timer,
-   status: 'Stop' | 'Start'
-}
-
-
 chrome.runtime.onInstalled.addListener(async() => {
-   let timerProperties: ITimerProperties = {
-      time: defaultTime,
-      fullTime: defaultTime,
-      defaultChillTime: defaultTime,
-      defaultJobTime: defaultTime,
-      mode: 'Job',
-      isStarted: false,
-      isComplete: false,
-      timestamp: null,
-      status: 'Stop'
-   }
-   await chrome.storage.local.set({timerProperties})
+   await chrome.storage.local.set({timerProperties: defatultTimerProperties})
 })
 
 chrome.runtime.onConnect.addListener(async (port) => {
@@ -53,6 +25,8 @@ chrome.runtime.onConnect.addListener(async (port) => {
 		})
 	}
 })
+
+
 
 chrome.storage.onChanged.addListener(changes => {
    for (let [key, {oldValue, newValue}] of Object.entries(changes)) {

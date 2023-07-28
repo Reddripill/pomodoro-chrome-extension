@@ -4,6 +4,7 @@ import Button from '../UI/Button/Button'
 import TimerInput from '../UI/TimerInput/TimerInput';
 import { PortContext } from '../../providers/PortProvider';
 import { IStringTime, timeNumberConverter, timeStringConverter } from '../../utils/timeConverter';
+import DropDown from '../UI/DropDown/AudioDropDown';
 
 interface IProps {
 	cb?: () => void;
@@ -63,6 +64,7 @@ const Options = ({cb}: IProps) => {
                label='Chill Time'
                onChange={chillChangeHandler}
             />
+            <DropDown />
             <Button
                type='submit'
                clickHandler={() => {

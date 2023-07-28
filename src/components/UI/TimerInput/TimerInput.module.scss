@@ -9,9 +9,11 @@
   bg-inputColor h-11 rounded-md;
 }
 .input {
-  @apply h-full w-0 bg-transparent text-xl text-iconColor 
-  font-sans flex-grow-0 basis-8 text-center outline-none;
+  @apply h-full w-0 bg-transparent text-lg text-iconColor 
+  font-sans flex-grow-0 basis-7 text-center outline-none flex
+  items-center;
 }
 .colon {
-  @apply px-1 text-xl text-iconColor font-sans;
+  @apply text-lg text-iconColor font-sans h-full flex 
+  items-center;
 }

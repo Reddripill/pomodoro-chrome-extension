@@ -12,3 +12,28 @@ export const playAudio = async (audioEl: HTMLAudioElement, data: AudioValuesType
       status: 'Start'
    }}) */
 }
+
+let audioCtx: AudioContext;
+let audioSource: AudioBufferSourceNode;
+const initializeAudio = () => {
+   audioCtx = new (window.AudioContext || window.webkitAudioContext)()
+}
+const decodeAudio = async (audioData: ArrayBuffer) => {
+   const decodedData = await audioCtx.decodeAudioData(audioData);
+   audioSource = audioCtx.createBufferSource();
+   audioSource.buffer = decodedData;
+   audioSource.connect(audioCtx.destination)
+}
+export const fetchAndTestAudio = async (audio: string) => {
+   try {
+      const response = await fetch(`./audio/${audio}.mp3`);
+      const buffer = await response.arrayBuffer();
+      if(!audioCtx) {
+         initializeAudio()
+      }
+      await decodeAudio(buffer);
+      audioSource.start()
+   } catch(err) {
+      console.error('Error loading audio: ', err);
+   }
+}

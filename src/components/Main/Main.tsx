@@ -14,6 +14,45 @@ export interface ITime {
 
 const Main = () => {
    const {timerProperties} = useContext(PortContext);
+   const startHandler = () => {
+      chrome.storage.local.set({timerProperties: {
+         ...timerProperties,
+         status: 'Start'
+      }})
+   }
+   const stopHandler = () => {
+      chrome.storage.local.set({timerProperties: {
+         ...timerProperties,
+         status: 'Stop'
+      }})
+   }
+   const skipHandler = () => {
+      if (timerProperties.mode === 'Job') {
+         chrome.storage.local.set({timerProperties: {
+            ...timerProperties,
+            mode: 'Chill',
+            status: 'Start',
+            time: timerProperties.defaultChillTime,
+            fullTime: timerProperties.defaultChillTime
+         }})
+      } else {
+         chrome.storage.local.set({timerProperties: {
+            ...timerProperties,
+            status: 'Stop',
+            mode: 'Job',
+            time: timerProperties.defaultJobTime,
+            fullTime: timerProperties.defaultJobTime
+         }})
+      }
+   }
+   const resetHandler = () => {
+      chrome.storage.local.set({timerProperties: {
+         ...timerProperties,
+         status: 'Stop',
+         isStarted: false,
+         time: timerProperties.mode === 'Job' ? timerProperties.defaultJobTime : timerProperties.defaultChillTime
+      }})
+   }
 	return (
 		<div className={styles.wrapper}>
 			<div className={styles.title}>
@@ -23,18 +62,16 @@ const Main = () => {
 			<div className={styles.mode}>{timerProperties.mode}</div>
 			<Timer />
 			<div className={styles.actions}>
-				<button className={styles.buttonAction} type='button' onClick={() => {
-					chrome.storage.local.set({timerProperties: {
-                  ...timerProperties,
-                  status: 'Start'
-               }})
-				}}>Start</button>
-				<button className={styles.buttonAction} type='button' onClick={() => {
-					chrome.storage.local.set({timerProperties: {
-                  ...timerProperties,
-                  status: 'Stop'
-               }})
-				}}>Stop</button>
+            {timerProperties.status === 'Start' ? 
+               <button className={styles.buttonAction} type='button' onClick={stopHandler}>Stop</button>
+               :
+               <button className={styles.buttonAction} type='button' onClick={startHandler}>Start</button>
+            }
+            {timerProperties.isStarted ? 
+               <button className={styles.buttonAction} type='button' onClick={resetHandler}>Reset</button>
+               :
+               <button className={styles.buttonAction} type='button' onClick={skipHandler}>Skip</button>
+            }
 			</div>
 			<Sidebar />
 		</div>

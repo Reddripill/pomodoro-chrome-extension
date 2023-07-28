@@ -1,0 +1,20 @@
+.wrapper {
+  @apply w-full h-11 rounded-md bg-inputColor text-xl 
+  text-iconColor font-sans relative;
+}
+.visible {
+  @apply flex items-center justify-between h-full px-4 
+  cursor-pointer;
+}
+
+.menu {
+  @apply hidden absolute w-full top-full left-0
+  bg-inputColor max-h-16 overflow-auto;
+  &._open {
+    @apply block;
+  }
+}
+.item {
+  @apply h-6 flex items-center cursor-pointer px-4
+  text-sm;
+}

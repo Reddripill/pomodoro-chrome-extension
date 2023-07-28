@@ -4,7 +4,7 @@ import Options from '../Options/Options';
 import styles from './App.module.scss';
 import { PortContext } from '../../providers/PortProvider';
 import { MessageType } from '../../types/types';
-import { ITimerProperties } from '../../scripts/background';
+import { ITimerProperties } from '../../utils/default';
 
 
 const App = () => {

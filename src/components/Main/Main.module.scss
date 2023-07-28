@@ -1,11 +1,11 @@
 .title {
-  @apply flex items-center gap-4 mb-9;
+  @apply flex items-center gap-4 mb-8;
 }
 .titleText {
   @apply text-mainRed text-3xl font-lobster;
 }
 .mode {
-  @apply text-lg text-textRed mb-10;
+  @apply text-lg text-textRed mb-8;
 }
 .actions {
   @apply flex items-center gap-12;
@@ -16,5 +16,5 @@ button.buttonAction {
 	hover:bg-mainRed;
 }
 .wrapper {
-  @apply flex flex-col justify-center items-center relative pb-14 pt-4 h-full;
+  @apply flex flex-col justify-center items-center relative pt-5 pb-8;
 }

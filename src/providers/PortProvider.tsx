@@ -1,5 +1,5 @@
 import React from 'react'
-import { ITimerProperties } from '../scripts/background';
+import { ITimerProperties } from '../utils/default';
 
 interface IContext {
 	timerProperties: ITimerProperties | null;

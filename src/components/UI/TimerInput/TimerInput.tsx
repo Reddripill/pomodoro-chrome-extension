@@ -1,7 +1,6 @@
 import React from 'react'
 import styles from './TimerInput.module.scss'
 import { IStringTime } from '../../../utils/timeConverter';
-import { SetStateType } from '../../../types/types';
 
 
 interface IProps {

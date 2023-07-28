@@ -1,10 +1,11 @@
-import { ITimerProperties } from "../scripts/background";
+import { ITimerProperties } from "./default";
 import { StorageValueType } from "../types/types";
 import { setupOffscreen } from "./setupOffscreen";
 
 export const timer = async () => {
    const {timerProperties} = await chrome.storage.local.get('timerProperties') as StorageValueType<ITimerProperties>;
    let {status, time, isStarted, timestamp, isComplete, fullTime, mode} = timerProperties;
+   const currentSound = timerProperties.sounds.find(item => item.isSelected).name;
    if (status === 'Start') {
       timestamp = setInterval(async () => {
          isComplete = false;
@@ -24,7 +25,7 @@ export const timer = async () => {
                   chrome.runtime.sendMessage({
                      target: 'offscreen',
                      data: {
-                        source: './audio/mainSound.mp3',
+                        source: `./audio/${currentSound}.mp3`,
                         volume: 1
                      }
                   })
